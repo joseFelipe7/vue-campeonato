@@ -5,11 +5,9 @@
                 <li>LOGO</li>
                 <li>CAMPEONATOS</li>
                 <li><router-link to="/test">Teste</router-link></li>
-                <li><a data-bs-target="#login-modal" data-bs-toggle="modal" data-bs-dismiss="modal">LOGIN -  <span v-if="nome"> {{nome}}</span>
-
-                    <span v-else> Cadastre se</span>
-                    
-                    </a></li>
+                <li><a data-bs-target="#friend-modal" data-bs-toggle="modal" data-bs-dismiss="modal">AMIGOS</a></li>
+                <li v-if="userName"><a> {{ userName }} </a></li>
+                <li v-else><a data-bs-target="#login-modal" data-bs-toggle="modal" data-bs-dismiss="modal">LOGIN</a></li>
             </ul>
         </nav>
     </header>
@@ -19,12 +17,10 @@
 import { ref } from 'vue'
 
 defineProps({
-    nome: String,
+    userName: String,
 })
 
 const count = ref(0)
-
-// let logado = localStorage.getItem ('userlogado')
 </script>
 
 

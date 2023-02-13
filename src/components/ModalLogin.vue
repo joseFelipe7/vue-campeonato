@@ -3,26 +3,46 @@ import { ref } from 'vue'
 
 const emit = defineEmits(['logged'])
 
-const form = {
-    email: '',
-    password: ''
-};
+let form = ref({
+    email:'',
+    password:''
+})
 
-const submit = async () => {
+
+async function submit () {
     //form.post(route('posts.store'));
     console.log('oi')
-    console.log(form)
+    
     const response = await fetch('http://if-developers.com.br/api/auth/login',{
-                                    method:'POST',
-                                    body:JSON.stringify({
-                                        email:form.email,
-                                        password:form.password
-                                    })
+                                method:'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body:JSON.stringify({
+                                    email:form.value.email,
+                                    password:form.value.password
                                 })
-    const data = await response.json();
-    console.log(data)
-    // localStorage.setItem ('userlogado', 'luana')
-    // emit('logged', form)
+                            })
+                            
+    const responseJson = await response.json();
+    if(!response.ok){
+        alert(responseJson.message)
+    }
+
+    localStorage.setItem ('authorization_token', responseJson.data.access_token)
+    localStorage.setItem ('userName', responseJson.data.user.name)
+    localStorage.setItem ('userData', JSON.stringify({
+                                                    id:responseJson.data.user.id,
+                                                    name:responseJson.data.user.name,
+                                                    emai:responseJson.data.user.email
+                                                }))
+    emit('logged', 11111)
+    form.value.email = ''
+    form.value.password = ''
+    alert('Bem vindo '+localStorage.getItem('userName'))
+    document.getElementById('modal-login-close').click()
+
+
     
 };
 </script>
@@ -43,10 +63,11 @@ const submit = async () => {
                     </div>
                     <div class="mb-3">
                         <label for="" class="label-input">Senha</label>
-                        <input type="text" v-model="form.password" id="password" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                        <input type="password" v-model="form.password" id="password" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
                     </div>
                     <div class="mb-3 text-center">
                         <button @click="submit" class="btn-confirm-modal">Logar</button>
+                        <button type="button" class="btn btn-secondary" id="modal-login-close" style="display: none;" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
