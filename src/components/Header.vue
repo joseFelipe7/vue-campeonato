@@ -1,18 +1,3 @@
-<template>
-    <header>
-        <nav class="container">
-            <ul class="list-header">
-                <li>LOGO</li>
-                <li>CAMPEONATOS</li>
-                <li><router-link to="/test">Teste</router-link></li>
-                <li><a data-bs-target="#friend-modal" data-bs-toggle="modal" data-bs-dismiss="modal">AMIGOS</a></li>
-                <li v-if="userName"><a> {{ userName }} </a></li>
-                <li v-else><a data-bs-target="#login-modal" data-bs-toggle="modal" data-bs-dismiss="modal">LOGIN</a></li>
-            </ul>
-        </nav>
-    </header>
-</template>
-
 <script setup>
 import { ref } from 'vue'
 
@@ -23,6 +8,19 @@ defineProps({
 const count = ref(0)
 </script>
 
+<template>
+    <header>
+        <nav class="container">
+            <ul class="list-header">
+                <li><router-link to="/">LOGO</router-link></li>
+                <li v-if="userName"><router-link to="/campeonato">CAMPEONATOS</router-link></li>
+                <li v-if="userName"><a data-bs-target="#friend-modal" data-bs-toggle="modal" data-bs-dismiss="modal">AMIGOS</a></li>
+                <li v-if="userName"><a> {{ userName }} </a></li>
+                <li v-else><a data-bs-target="#login-modal" data-bs-toggle="modal" data-bs-dismiss="modal">LOGIN</a></li>
+            </ul>
+        </nav>
+    </header>
+</template>
 
 <style scoped>
 header{
@@ -40,5 +38,10 @@ header{
 .list-header li a{
     cursor: pointer; 
     text-decoration: none;
+    color:#FFF;
+    transition: 0.3s;
+}
+.list-header li a:hover{
+    color:#21A179; 
 }
 </style>

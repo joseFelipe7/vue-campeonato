@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import requestApi from '../helpers/requestHelper'
 
 const emit = defineEmits(['logged'])
 
@@ -66,8 +67,46 @@ async function startMatch(){
     props.championship.matchs = responseMatchJson.data.matchs
     console.log('start')
 }
-async function playerWin(idPlayer){
+async function endChampionship(){
+    const response = await fetch(`http://if-developers.com.br/api/championship/${props.championship.championship.id}/match`,{
+                                method:'POST',  
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': 'Bearer '+props.userLoggedToken
+                                },
+                               
+                            })
+
+    const responseJson = await response.json();
+    if(!response.ok){
+        alert(responseJson.message)
+        return
+    } 
+    alert('campeonato finalizado ganhador foi '+responseJson.data.player_win.name)
+}
+
+async function playerWin(idMatch, idPlayer, indexMatch){
     console.log(idPlayer)
+    console.log(``)
+    const response = await fetch(`http://if-developers.com.br/api/championship/${props.championship.championship.id}/match/${idMatch}/finished`,{
+                                method:'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': 'Bearer '+props.userLoggedToken
+                                },
+                                body:JSON.stringify({
+                                    id_player_win:idPlayer
+                                })
+                               
+                            })
+
+    const responseJson = await response.json();
+    if(!response.ok){
+        alert(responseJson.message)
+        return
+    }
+
+    props.championship.matchs[indexMatch].id_player_win = idPlayer
 }
 </script>
 <template>
@@ -80,7 +119,8 @@ async function playerWin(idPlayer){
                     </div>
                 </div>
                 <div style="display: flex; align-items: center; justify-content: space-between; margin: 0px 15px;">
-                    <button  style="background: #21A179; color: #FFF; border-radius: 10px; padding: 2px 20px; font-weight: 600;" @click="startMatch"><span v-if="championship.championship.round_total==championship.championship.round_current">Finalizar campeonato</span> <span v-else>Iniciar Proxima Rodada</span></button>
+                  <button v-if="championship.championship.round_total==championship.championship.round_current"  style="background: #FE3EE0; color: #FFF; border-radius: 10px; padding: 2px 20px; font-weight: 600;" @click="endChampionship"><span >Finalizar campeonato</span></button>
+                  <button v-else style="background: #21A179; color: #FFF; border-radius: 10px; padding: 2px 20px; font-weight: 600;" @click="startMatch"><span>Iniciar Proxima Rodada</span></button>
                     <span style="color: #FFF;">Rodada Atual: {{championship.championship.round_current}}</span>
                 </div>
                         
@@ -89,26 +129,28 @@ async function playerWin(idPlayer){
                         <table class="table text-white">
                             <thead>
                                 <tr>
-                                    <td colspan="3" style="color: #FFF; text-align: center; font-weight: 700; font-size: 20px;" >Partidas da Rodada</td>
+                                    <td colspan="4" style="color: #FFF; text-align: center; font-weight: 700; font-size: 20px;" >Partidas da Rodada</td>
                                 </tr>
                                 <tr  v-if="championship.matchs.length > 0">
                                     <th scope="col">Player A</th>
                                     <th scope="col">Player B</th>
                                     <th scope="col" style="text-align: center;">Vencedor</th>
+                                    <th scope="col" style="text-align: center;">Status da partida</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-if="championship.matchs.length == 0">
-                                    <td colspan="3" style="text-align: center;">Sem partidas no momento</td>
+                                    <td colspan="4" style="text-align: center;">Sem partidas no momento</td>
                                 </tr>
-                                <tr v-for="(item) in championship.matchs" :key="'match-'+item.id">
+                                <tr v-for="(item, index) in championship.matchs" :key="'match-'+item.id">
                                     <td>{{item.player_a}}</td>
                                     <td>{{item.player_b}}</td>
                                     <td style="text-align: center;" v-if="item.id_player_win">{{item.id_player_win==item.id_player_a?item.player_a:item.player_b}}</td>
-                                    <td style="text-align: center;" v-else>
-                                        <button style="background: #247BA0; color: #FFF; border-radius: 6px; padding: 2px 20px; font-weight: 600;" @click="playerWin(item.id_player_a)">{{item.player_a}}</button>
-                                        <button style="background: #247BA0; color: #FFF; border-radius: 6px; padding: 2px 20px; font-weight: 600;" @click="playerWin(item.id_player_b)">{{item.player_b}}</button> 
+                                    <td style="text-align: center; display: flex; font-size: 14px;" v-else>
+                                        <button style="background: #247BA0; color: #FFF; border-radius: 6px; padding: 2px 20px; font-weight: 600;" @click="playerWin(item.id, item.id_player_a, index)">{{item.player_a}}</button>
+                                        <button style="background: #247BA0; color: #FFF; border-radius: 6px; padding: 2px 20px; font-weight: 600;" @click="playerWin(item.id, item.id_player_b, index)">{{item.player_b}}</button> 
                                     </td>
+                                    <td  style="text-align: center;"><span v-if="item.id_player_win">Finalizada</span> <span v-else>Aguardando vencedor</span></td>
                                 </tr>
                             </tbody>
                         </table>

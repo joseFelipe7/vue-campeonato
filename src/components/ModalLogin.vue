@@ -1,7 +1,8 @@
 <script setup>
 import { ref } from 'vue'
+import requestApi from '../helpers/requestHelper';
 
-const emit = defineEmits(['logged'])
+const emit = defineEmits(['logged', 'notifyer'])
 
 let form = ref({
     email:'',
@@ -10,41 +11,26 @@ let form = ref({
 
 
 async function submit () {
-    //form.post(route('posts.store'));
-    console.log('oi')
+    const request = await requestApi('auth/login', 'POST', true, { email:form.value.email, password:form.value.password })
     
-    const response = await fetch('http://if-developers.com.br/api/auth/login',{
-                                method:'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body:JSON.stringify({
-                                    email:form.value.email,
-                                    password:form.value.password
-                                })
-                            })
-                            
-    const responseJson = await response.json();
-    if(!response.ok){
-        alert(responseJson.message)
-    }
+    if(!request.status) return emit('notifyer', {title: 'Falha!', text: request.error, btnText: 'OK'})
 
-    localStorage.setItem ('authorization_token', responseJson.data.access_token)
-    localStorage.setItem ('userName', responseJson.data.user.name)
+    localStorage.setItem ('authorization_token', request.result.data.access_token)
+    localStorage.setItem ('userName', request.result.data.user.name)
     localStorage.setItem ('userData', JSON.stringify({
-                                                    id:responseJson.data.user.id,
-                                                    name:responseJson.data.user.name,
-                                                    emai:responseJson.data.user.email
-                                                }))
-    emit('logged', 11111)
+                                                        id:request.result.data.user.id,
+                                                        name:request.result.data.user.name,
+                                                        emai:request.result.data.user.email
+                                                    }))
+    
+    emit('logged')
+
     form.value.email = ''
     form.value.password = ''
-    alert('Bem vindo '+localStorage.getItem('userName'))
+
     document.getElementById('modal-login-close').click()
 
-
-    
-};
+}
 </script>
 <template>
     <div class="modal fade" id="login-modal" tabindex="-1" aria-labelledby="loginModal" aria-hidden="true">

@@ -10,6 +10,7 @@
   position: relative; 
   padding-bottom: 50px;
  }
+
 /*
  * Modal style
  */
@@ -50,4 +51,24 @@
   padding: 12px 28px; 
   font-weight: bold; 
   width: 100%;
+  transition: 0.3s;
+}
+.btn-confirm-modal:hover{
+	background: #247BA0;
+}
+.btn-rounded{
+	color:#FFF; 
+	border: none; 
+	text-align: center; 
+	border-radius: 25px; 
+	padding: 5px 25px; 
+	font-weight: bold;
+	transition: 0.3s;
+}
+.btn-confirm{
+	background-color: #21A179 ;
+}
+.btn-rounded.btn-confirm:hover{
+	background-color: #21A179 ;
+	background: #247BA0;
 }

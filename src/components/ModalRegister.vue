@@ -1,8 +1,8 @@
 <script setup>
 import { ref } from 'vue'
+import requestApi from '../helpers/requestHelper'
 
-
-const emit = defineEmits(['register'])
+const emit = defineEmits(['register', 'notifyer'])
 
 let form = ref({
     name:'',
@@ -11,58 +11,26 @@ let form = ref({
 })
 
 async function submit () {
-    const response = await fetch('http://if-developers.com.br/api/player',{
-                                method:'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body:JSON.stringify({
-                                    name:form.value.name,
-                                    email:form.value.email,
-                                    password:form.value.password
-                                })
-                            })
-                            
-    const responseJson = await response.json();
-    if(!response.ok){
-        alert(responseJson.message)
-    }
-    console.log(responseJson)
-    // localStorage.setItem ('authorization_token', responseJson.data.access_token)
-    // localStorage.setItem ('userName', responseJson.data.user.name)
-    // localStorage.setItem ('userData', JSON.stringify({
-    //                                                 id:responseJson.data.user.id,
-    //                                                 name:responseJson.data.user.name,
-    //                                                 emai:responseJson.data.user.email
-    //                                             }))
-    const responseLogin = await fetch('http://if-developers.com.br/api/auth/login',{
-                                method:'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body:JSON.stringify({
-                                    email:form.value.email,
-                                    password:form.value.password
-                                })
-                            })
-                            
-    const responseLoginJson = await responseLogin.json();
-    if(!responseLogin.ok){
-        alert(responseLoginJson.message)
-    }
+    
+    let request = await requestApi('player', 'POST', false, { name:form.value.name, email:form.value.email, password:form.value.password })
+    if(!request.status) return emit('notifyer', {title: 'Falha!', text: request.error, btnText: 'OK'})
 
-    localStorage.setItem ('authorization_token', responseLoginJson.data.access_token)
-    localStorage.setItem ('userName', responseLoginJson.data.user.name)
+    request = await requestApi('auth/login', 'POST', false, { email:form.value.email, password:form.value.password })
+    if(!request.status) return emit('notifyer', {title: 'Falha!', text: request.error, btnText: 'OK'})
+
+  
+    localStorage.setItem ('authorization_token', request.result.data.access_token)
+    localStorage.setItem ('userName', request.result.data.user.name)
     localStorage.setItem ('userData', JSON.stringify({
-                                                    id:responseLoginJson.data.user.id,
-                                                    name:responseLoginJson.data.user.name,
-                                                    emai:responseLoginJson.data.user.email
+                                                    id:request.result.data.user.id,
+                                                    name:request.result.data.user.name,
+                                                    emai:request.result.data.user.email
                                                 }))
-    emit('register', 11111)
+    emit('register')
     form.value.name = ''
     form.value.email = ''
     form.value.password = ''
-    alert('Bem vindo '+localStorage.getItem('userName'))
+    
     document.getElementById('modal-register-close').click()
 
 };

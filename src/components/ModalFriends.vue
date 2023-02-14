@@ -1,6 +1,6 @@
 <script setup>
-import { ref } from 'vue'
-
+import { ref, onMounted } from 'vue'
+import requestApi from '../helpers/requestHelper'
 const props = defineProps({
     userLoggedToken: String,
 })
@@ -13,11 +13,35 @@ let form = ref({
     email:'',
     password:''
 })
-let recivedInvites = ref([{id:1, name:'player'}])
-let sendInvites    = ref([{id:1, name:'player'}])
+let recivedInvites = ref([])
+let sendInvites    = ref([])
 
 let searchSend = ref('')
 let searchReceived = ref('')
+onMounted(async ()=>{
+    let request = await requestApi(`player?filter[search]=${searchSend.value}`, 'GET', true)
+    
+    if(!request.status) return emit('notifyer', {title: 'Falha!', text: request.error, btnText: 'OK'})
+
+    sendInvites.value = request.result.data.players
+    //recived
+    const responseRecived = await fetch(`http://if-developers.com.br/api/friend/pending?filter[search]=${searchReceived.value}`,{
+                                method:'GET',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': 'Bearer '+props.userLoggedToken
+                                },
+                               
+                            })
+
+    const responseRecivedJson = await responseRecived.json();
+    if(!responseRecived.ok){
+        alert(responseRecivedJson.message)
+    }
+
+    recivedInvites.value = responseRecivedJson.data.friends
+    
+})
 
 function selectTabSend(){
     document.getElementById('container-received-friend').style.display = 'block'
@@ -70,7 +94,6 @@ async function searchReceivedInput(){
 
 }
 async function acceptFriend(idFriend, indexFriend){
-    
     const response = await fetch(`http://if-developers.com.br/api/friend/${idFriend}`,{
                                 method:'PUT',
                                 headers: {
@@ -126,6 +149,7 @@ async function submit () {
     const responseJson = await response.json();
     if(!response.ok){
         alert(responseJson.message)
+        return
     }
 
     localStorage.setItem ('authorization_token', responseJson.data.access_token)
@@ -156,6 +180,8 @@ async function submit () {
             <div class="modal-body m-0">
                 <div class="mb-3">
                     <div>
+                        <!-- <span @click="selectTab('f')" :class="['btn-friend-tab', activeTabA ? 'active-tab' : '']" id="btn-send-friends" style="">Solicitações de amizade</span>  -->
+
                         <span @click="selectTabSend" class="btn-friend-tab" id="btn-send-friends" style="">Solicitações de amizade</span> 
                         <span @click="selectTabSearch" class="btn-friend-tab active-tab" id="btn-search-friend" style="">Encontre Novos Amigos</span>
                     </div>
@@ -164,11 +190,11 @@ async function submit () {
                     <div class="mb-4">
                         <input type="text" placeholder="Pesquisar novos amigos..." v-model="searchSend" @keyup="searchSendInput"  class="form-control" >
                     </div>
-                    <div class="my-3" style="display: flex; justify-content: space-between; border-bottom: 1px solid #FE3EE0; padding: 5px 0px"  v-for="(item, index) in sendInvites" :key="item.id">
-                        <span style="color:#FFF">{{item.name}}</span>
-                        <button v-if="item.accept==1" style="background: #21A179; color: #FFF; border-radius: 10px; padding: 2px 20px; font-weight: 600;">Amigo</button>
-                        <button v-else-if="item.accept==0" style="background: #989898; color: #FFF; border-radius: 10px; padding: 2px 20px; font-weight: 600;">Convite Enviado</button>
-                        <button v-else @click="sendRequestFriend(item.id, index)" style="background: #21A179; color: #FFF; border-radius: 10px; padding: 2px 20px; font-weight: 600;">Adicionar</button>
+                    <div class="my-3 friend-line-modal" v-for="(item, index) in sendInvites" :key="item.id">
+                        <span class="text-white">{{item.name}}</span>
+                        <button v-if="item.accept==1" class="btn-modal-friend btn-confirm" style="">Amigo</button>
+                        <button v-else-if="item.accept==0"  class="btn-modal-friend btn-disable">Convite Enviado</button>
+                        <button v-else @click="sendRequestFriend(item.id, index)" class="btn-modal-friend btn-confirm" >Adicionar</button>
                     </div> 
                 </div>
                 <div class="modal-body-container" id="container-received-friend" style="display: none;">   
@@ -176,9 +202,9 @@ async function submit () {
                         <input type="text" placeholder="Procurar solicitações..."  v-model="searchReceived" @keyup="searchReceivedInput"  class="form-control">
                     </div>
                     <div class="my-3" style="display: flex; justify-content: space-between; border-bottom: 1px solid #FE3EE0; padding: 5px 0px"  v-for="(item, index) in recivedInvites" :key="item.id">
-                        <span style="color:#FFF">{{item.name}}</span>
-                        <button v-if="item.accept==1" style="background: #989898; color: #FFF; border-radius: 10px; padding: 2px 20px; font-weight: 600;">Convite Aceito</button>
-                        <button v-else @click="acceptFriend(item.id, index)" style="background: #21A179; color: #FFF; border-radius: 10px; padding: 2px 20px; font-weight: 600;">Aceitar</button>
+                        <span class="text-white">{{item.name}}</span>
+                        <button v-if="item.accept==1" class="btn-modal-friend btn-disable">Convite Aceito</button>
+                        <button v-else @click="acceptFriend(item.id, index)" class="btn-modal-friend btn-confirm">Aceitar</button>
 
                     </div>
                 </div>
@@ -204,5 +230,30 @@ async function submit () {
         color: #FFF;
         text-decoration: underline #21A179; 
         text-underline-offset: 4px;  
+    }
+    .friend-line-modal{
+        display: flex; 
+        justify-content: space-between; 
+        border-bottom: 1px solid #FE3EE0; 
+        padding: 5px 0px
+    }
+    .friend-line-modal span{
+        color:#FFF
+    }
+    .btn-modal-friend{
+        color: #FFF; 
+        border-radius: 10px;
+        padding: 2px 20px; 
+        font-weight: 600;
+        transition: 0.3s;
+    }
+    .btn-modal-friend.btn-confirm{
+        background: #21A179; 
+    }
+    .btn-modal-friend.btn-confirm:hover{
+        background: #247BA0;
+    }
+    .btn-modal-friend.btn-disable{
+        background: #989898; 
     }
 </style>

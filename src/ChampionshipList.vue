@@ -5,7 +5,11 @@ import Footer from './components/Footer.vue'
 import ModalLogin from './components/ModalLogin.vue'
 import ModalRegister from './components/ModalRegister.vue'
 import ModalChampionshipDetails from './components/ModalChampionshipDetails.vue'
+import requestApi from './helpers/requestHelper'
+
 import { onMounted, ref } from 'vue'
+
+const emit = defineEmits(['toogle-notifyer'])
 
 let userLoggedName = ref(localStorage.getItem('userName'))
 let userLoggedToken = ref(localStorage.getItem('authorization_token'))
@@ -15,6 +19,10 @@ let championshipsDatails = ref({
     championship:{},
     matchs:[]
 })
+
+function notifyer(data){
+  emit('toogle-notifyer', data)
+}
 
 onMounted(async ()=>{
     console.log(userLoggedToken.value)
@@ -111,9 +119,8 @@ async function changeDatailChampionship(idChampionship, indexChampionship){
   </div>
   <Footer />
 
-  <ModalLogin @logged="login" />
-  <ModalRegister @register="login" />
-  <ModalChampionshipDetails  :userLoggedToken="userLoggedToken"  :championship="championshipsDatails"/>
+  <ModalFriends v-if="userLoggedToken" :userLoggedToken="userLoggedToken"  @notifyer="notifyer"/>
+  <ModalChampionshipDetails  :userLoggedToken="userLoggedToken"  :championship="championshipsDatails"  @notifyer="notifyer"/>
   
   
   <!--  <HelloWorld msg="Vite + Vue" /> -->

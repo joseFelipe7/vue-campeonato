@@ -1,18 +1,34 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import { onMounted, ref } from 'vue'
+
+import HelloWorld from './components/HelloWorld.vue';
+import Notifyer from './components/Notifyer.vue';
+
+const emit = defineEmits(['toogle-notifyer']);
+onMounted(()=>{
+
+})
+let onNotifyer = ref(false);
+let title = ref('');
+let text = ref('');
+let btnText = ref('');
+
+function toogleNotifyer(contentNotifyer){
+  title.value = contentNotifyer.title;
+  text.value = contentNotifyer.text;
+  btnText.value = contentNotifyer.btnText;
+  onNotifyer.value = true;
+  setTimeout(()=>{
+    onNotifyer.value = false;
+  },6000)
+}
 </script>
 
 <template>
-  <!-- <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div> 
-  <HelloWorld msg="Vite + Vue" /> -->
-  <router-view />
+  
+  <Notifyer v-if="onNotifyer" :title="title" :text="text" :btnText="btnText"/>
+
+  <router-view @toogle-notifyer="toogleNotifyer" />
 </template>
 
 <style scoped>

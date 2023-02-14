@@ -18,10 +18,6 @@ const routes = [
     path: '/campeonato/criar',
     name: 'Championship',
     component: Championship
-  },{
-    path: '/test',
-    name: 'Test',
-    component: Test
   }
 ]
 const router = createRouter({

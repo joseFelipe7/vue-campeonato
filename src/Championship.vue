@@ -5,7 +5,13 @@ import Footer from './components/Footer.vue'
 import ModalLogin from './components/ModalLogin.vue'
 import ModalRegister from './components/ModalRegister.vue'
 import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRouter } from 'vue-router';
+import requestApi from './helpers/requestHelper'
+
+const router = useRouter()
+
+
+const emit = defineEmits(['toogle-notifyer'])
 
 let userLoggedName = ref(localStorage.getItem('userName'))
 let userLoggedToken = ref(localStorage.getItem('authorization_token'))
@@ -16,22 +22,11 @@ let friendsIdInvite = ref([])
 let nameChampionship = ref('')
 let typeChampionship = ref(1)
 let totalPlayers   = ref(2)
-function login(item){
-    userLoggedName.value = localStorage.getItem('userName')
-    console.log('recebi', userLoggedName)
-}
-const route = useRoute()
 
-onMounted(()=>{
-    // console.log(route)
-    // console.log(route.params)
-    // console.log(route.params.id)
-})
-function cheguei(){
-    // console.log(route)
-    // console.log(route.params)
-    // console.log(route.params.id)
+function notifyer(data){
+  emit('toogle-notifyer', data)
 }
+
 
 async function searchFriend(){
     const response = await fetch(`http://if-developers.com.br/api/friend?filter[search]=${searchFriendInput.value}`,{
@@ -45,7 +40,7 @@ async function searchFriend(){
 
     const responseJson = await response.json();
     if(!response.ok){
-        alert(responseJson.message)
+        emit('toogle-notifyer', {title: 'Falha!', text: responseJson.message, btnText: 'OK'})
     }
     console.log(responseJson.data)
 
@@ -62,40 +57,43 @@ function decreasePlayers (){
     }
 }
 function inviteForChampionship(idFriend, indexFriend){
-    console.log('convocado')
-    console.log(idFriend)
-    console.log(indexFriend)
+
     if(friendsInvite.value.length+1 > totalPlayers.value){
-        alert('numero maximo de players atingido')
+        emit('toogle-notifyer', {title: 'Ops!', text: 'Número máximo de players atingido', btnText: 'OK'})
         return
     }
     friendsInvite.value.push(friends.value[indexFriend])
     friendsIdInvite.value.push(friends.value[indexFriend].id_friend)
-    console.log(friendsInvite.value)
+    
 }
 async function createChampionship(){
+  
     if(friendsInvite.value.length != totalPlayers.value){
-        alert('Numero de players diferente do solicitado')
+        emit('toogle-notifyer', {title: 'Ops!', text: 'Número de players diferente do solicitado', btnText: 'OK'})
         return
     }
     const response = await fetch('http://if-developers.com.br/api/championship/created',{
-                                method:'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': 'Bearer '+userLoggedToken.value
-                                },
-                                body:JSON.stringify({
-                                    name:nameChampionship.value,
-                                    id_type_championship:typeChampionship.value,
-                                    players:friendsIdInvite.value
-                                })
-                            })
+          method:'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer '+userLoggedToken.value
+          },
+          body:JSON.stringify({
+              name:nameChampionship.value,
+              id_type_championship:typeChampionship.value,
+              players:friendsIdInvite.value
+          })
+      })
                             
     const responseJson = await response.json();
     if(!response.ok){
-        alert(responseJson.message)
+        emit('toogle-notifyer', {title: 'Falha!', text: responseJson.message, btnText: 'OK'})
+        return
     }
-    alert('Campeonato criado')
+    emit('toogle-notifyer', {title: 'Sucesso!', text: 'Campeonato criado', btnText: 'OK'})
+
+    router.push('/campeonato')
+    return
 }
 
 </script>
@@ -107,7 +105,7 @@ async function createChampionship(){
     <div style="width: 100%; height: 100%; background: linear-gradient(360deg, #33115F 15.34%, rgba(0, 0, 0, 0.31) 76.73%); display: flex; align-items: center; justify-content: center;">
         <div style="text-align: center;">
             <p style="color:#FFF; font-weight: bold; font-size: 24px;">Crie e gerencie seus próprios campeonatos </p>
-            <button  data-bs-toggle="modal" data-bs-target="#cadastro-modal" style=" background-color: #21A179 ;color:#FFF; border: none; text-align: center; border-radius: 25px; padding: 5px 25px; font-weight: bold;" >CAMPEONATOS </button>
+            <button  data-bs-toggle="modal" data-bs-target="#cadastro-modal" class="btn-rounded btn-confirm" >CAMPEONATOS </button>
         </div>
     </div>
   </div>
@@ -116,7 +114,7 @@ async function createChampionship(){
     <div style="width: 100%; height: 100%; background: linear-gradient(360deg, #33115F 15.34%, rgba(0, 0, 0, 0.31) 76.73%); display: flex; align-items: center; justify-content: center;">
         <div style="text-align: center;">
             <p style="color:#FFF; font-weight: bold; font-size: 24px;">Crie e gerencie seus próprios campeonatos </p>
-            <button  data-bs-toggle="modal" data-bs-target="#cadastro-modal" style=" background-color: #21A179 ;color:#FFF; border: none; text-align: center; border-radius: 25px; padding: 5px 25px; font-weight: bold;" >CADASTRE-SE </button>
+            <button  data-bs-toggle="modal" data-bs-target="#cadastro-modal" class="btn-rounded btn-confirm" >CADASTRE-SE </button>
         </div>
     </div>
   </div>
@@ -142,7 +140,7 @@ async function createChampionship(){
                 <p style="color:#FFF; text-align: center; font-weight: 600; margin: 0;">Jogadores adicionados</p>
             </div>
             <div style="background: #1A0831; border-radius: 8px; padding: 10px;">
-                <div class="my-3" style="display: flex; justify-content: space-between; border-bottom: 1px solid #FE3EE0; padding: 8px 0px" v-for="(item, index) in friendsInvite" :key="item.id">
+                <div class="my-3" style="display: flex; justify-content: space-between; border-bottom: 1px solid #FE3EE0; padding: 8px 0px" v-for="(item) in friendsInvite" :key="item.id">
                     <span style="color:#FFF">{{item.name}}</span>
                     <button style="background: #FE3EE0; color: #FFF; border-radius: 10px; padding: 2px 20px; font-weight: 600;">Convidado</button>
                 </div>
@@ -200,10 +198,7 @@ async function createChampionship(){
   </div>
   <Footer />
 
-  <ModalLogin @logged="login" />
-  <ModalRegister @register="login" />
-  
-  <!--  <HelloWorld msg="Vite + Vue" /> -->
+  <ModalFriends v-if="userLoggedToken" :userLoggedToken="userLoggedToken"  @notifyer="notifyer"/>
   
 </template>
 
