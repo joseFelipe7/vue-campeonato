@@ -7,7 +7,7 @@ const props = defineProps({
 
 
 
-const emit = defineEmits(['logged'])
+const emit = defineEmits(['logged', 'notifyer'])
 
 let form = ref({
     email:'',
