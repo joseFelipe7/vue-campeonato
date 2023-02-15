@@ -54,12 +54,12 @@
         <div class="modal-body m-0">
           <div class="moodal-body-container">
             <div class="mb-3">
-              <label for="" class="label-input">E-mail</label>
+              <label  class="label-input">E-mail</label>
               <input type="text" v-model="form.email" id="email" class="form-control" aria-label="Username"
                 aria-describedby="basic-addon1">
             </div>
             <div class="mb-3">
-              <label for="" class="label-input">Senha</label>
+              <label  class="label-input">Senha</label>
               <input type="password" v-model="form.password" id="password" class="form-control" aria-label="Username"
                 aria-describedby="basic-addon1">
             </div>

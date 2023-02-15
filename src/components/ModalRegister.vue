@@ -49,16 +49,16 @@ async function submit () {
             <div class="modal-body m-0">
                 <div class="moodal-body-container">  
                     <div class="mb-3">
-                        <label for="" class="label-input" >Nome</label>
+                        <label  class="label-input" >Nome</label>
                         <input type="text" v-model="form.name" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
                     </div>
                     <div class="mb-3">
-                        <label for="" class="label-input">E-mail</label>
+                        <label  class="label-input">E-mail</label>
                         <input type="text" v-model="form.email" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
                     </div>
                     <div class="mb-3">
-                        <label for="" class="label-input">Senha</label>
-                        <input type="text" v-model="form.password" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                        <label  class="label-input">Senha</label>
+                        <input type="password" v-model="form.password" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
                     </div>
                     <div class="mb-3 text-center">
                         <button  class="btn-confirm-modal"  @click="submit">CADASTRE-SE</button>

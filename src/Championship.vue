@@ -1,18 +1,16 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router';
+import requestApi from './helpers/requestHelper'
+
 import Header from './components/Header.vue'
 import Footer from './components/Footer.vue'
 import ModalFriends from './components/ModalFriends.vue'
 import ModalLogin from './components/ModalLogin.vue'
 import ModalRegister from './components/ModalRegister.vue'
-import { onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router';
-import requestApi from './helpers/requestHelper'
 
-const router = useRouter()
-
-
-const emit = defineEmits(['toogle-notifyer'])
+const router = useRouter();
+const emit = defineEmits(['toogle-notifyer']);
 
 let userLoggedName = ref(localStorage.getItem('userName'))
 let userLoggedToken = ref(localStorage.getItem('authorization_token'))
@@ -28,31 +26,20 @@ let totalPlayers   = ref(2)
 function notifyer(data){
   emit('toogle-notifyer', data)
 }
-
-
+onMounted(()=>{
+    searchFriend()
+})
 async function searchFriend(){
-    const response = await fetch(`https://if-developers.com.br/api/friend?filter[search]=${searchFriendInput.value}`,{
-                                    method:'GET',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'Authorization': 'Bearer '+userLoggedToken.value
-                                    },
-                               
-                            })
+    let request = await requestApi(`friend?filter[search]=${searchFriendInput.value}`, 'GET', true)
+    if(!request.status) return emit('toogle-notifyer', {title: 'Falha!', text: request.error, btnText: 'OK'})
 
-    const responseJson = await response.json();
-    if(!response.ok){
-        emit('toogle-notifyer', {title: 'Falha!', text: responseJson.message, btnText: 'OK'})
-    }
-    console.log(responseJson.data)
-
-    friends.value = responseJson.data.friends
-
+    friends.value = request.result.data.friends
 }
 
 function increasePlayers (){
     totalPlayers.value = totalPlayers.value*2
 }
+
 function decreasePlayers (){
     if(totalPlayers.value/2 > 1){
         totalPlayers.value = totalPlayers.value/2
@@ -60,10 +47,8 @@ function decreasePlayers (){
 }
 function inviteForChampionship(idFriend, indexFriend){
 
-    if(friendsInvite.value.length+1 > totalPlayers.value){
-        emit('toogle-notifyer', {title: 'Ops!', text: 'Número máximo de players atingido', btnText: 'OK'})
-        return
-    }
+    if(friendsInvite.value.length+1 > totalPlayers.value) return emit('toogle-notifyer', {title: 'Ops!', text: 'Número máximo de players atingido', btnText: 'OK'})
+
     friendsInvite.value.push(friends.value[indexFriend])
     friendsIdInvite.value.push(friends.value[indexFriend].id_friend)
     
@@ -78,30 +63,14 @@ async function createChampionship(){
         emit('toogle-notifyer', {title: 'Ops!', text: 'Número de players diferente do solicitado', btnText: 'OK'})
         return
     }
-    const response = await fetch('https://if-developers.com.br/api/championship/created',{
-          method:'POST',
-          headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer '+userLoggedToken.value
-          },
-          body:JSON.stringify({
-              name:nameChampionship.value,
-              id_type_championship:typeChampionship.value,
-              players:friendsIdInvite.value
-          })
-      })
-                            
-    const responseJson = await response.json();
-    if(!response.ok){
-        emit('toogle-notifyer', {title: 'Falha!', text: responseJson.message, btnText: 'OK'})
-        return
-    }
+    let request = await requestApi(`championship/created`, 'POST', true, { name:nameChampionship.value, id_type_championship:typeChampionship.value, players:friendsIdInvite.value})
+    if(!request.status) return emit('toogle-notifyer', {title: 'Falha!', text: request.error, btnText: 'OK'})
+
     emit('toogle-notifyer', {title: 'Sucesso!', text: 'Campeonato criado', btnText: 'OK'})
 
     router.push('/campeonato')
     return
 }
-
 </script>
 
 <template>
@@ -123,7 +92,7 @@ async function createChampionship(){
   <div class="container my-3">
     <div class="row">
         <div class="col-lg-1"></div>
-        <div class="col-lg-3 my-2" style="display: flex; justify-content: center;       flex-direction: column">
+        <div class="col-lg-3 my-2" style="display: flex; justify-content: flex-start; flex-direction: column">
             <div class="card"  style="width: 18rem;; background-image:url('/trofeu-card.jpg'); background-position: center top; background-size: 100% auto; height: 350px; border: none;">
                 <div class="card-body" style="background: linear-gradient(179.61deg, #247BA0 6.33%, rgba(36, 123, 160, 0.67) 30.42%, rgba(36, 123, 160, 0) 60.59%); border-radius: 5px 5px 0px 0px; display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
                     <div>
@@ -146,19 +115,19 @@ async function createChampionship(){
         <div class="col-lg-7 my-2" style="display: flex; justify-content: center; background: #1A0831; border-radius: 8px;">
             <div style="width: 100%; padding: 20px;">
                 <div class="mb-3">
-                    <label for="" class="label-input" >Nome do campeonato</label>
+                    <label  class="label-input" >Nome do campeonato</label>
                     <input type="text" v-model="nameChampionship" class="form-control">
                 </div>
                 <div class="mb-3">
-                    <label for="" class="label-input">Modalidade</label>
-                    <select name="" id=""  class="form-control">
+                    <label  class="label-input">Modalidade</label>
+                    <select class="form-control">
                         <option value="" disabled>Modalidades</option>
                         <option value="1" selected>Eliminatórias</option>
                     </select>
                 </div>
                 <div class="mb-3">
                     <div style="display: flex; justify-content: space-between;">
-                        <label for="" class="label-input">Quantidade de participantes</label>
+                        <label  class="label-input">Quantidade de participantes</label>
                         
                         <div class="containter-number-player" style="">
                             <div class="number-select"  @click="decreasePlayers">
@@ -174,13 +143,17 @@ async function createChampionship(){
                     </div>  
                 </div>
                 <div class="mb-3">
-                    <label for="" class="label-input">Convide seus amigos</label>
+                    <label  class="label-input">Convide seus amigos</label>
                     <input type="text" placeholder="Pesquisar amigos..." v-model="searchFriendInput" @keyup="searchFriend"  class="form-control">
                 </div>
                 
+                <div class="my-3 text-white text-center" v-if="friends.length == 0">
+                    <span v-if="searchFriendInput == ''"> Você não possui amigos. Adicione <a style="text-decoration: none;color: #FE3EE0; cursor: pointer;" data-bs-target="#friend-modal" data-bs-toggle="modal" data-bs-dismiss="modal">Amigos aqui</a> </span>
+                    <span v-else>Sem resultados</span>
+                </div>
                     <div class="my-3" style="display: flex; justify-content: space-between; border-bottom: 1px solid #FE3EE0; padding: 5px 0px" v-for="(item, index) in friends" :key="item.id">
                         <span style="color:#FFF">{{item.name}}</span>
-                        <button class="btn-friend btn-confirm" @click="inviteForChampionship(item.id, index)" v-if="!friendsIdInvite.includes(item.id_friend)"> Convidar </button>
+                        <button class="btn-friend btn-confirm" @click="inviteForChampionship(item.id, index)" v-if="!friendsIdInvite.includes(item.id_friend)"> Convidar </button> 
                         <button class="btn-friend btn-disable" v-else>Convidado</button>
                     </div>
                 <div class="mb-3 text-center">
