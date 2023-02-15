@@ -31,8 +31,8 @@ async function submit () {
     form.value.name = ''
     form.value.email = ''
     form.value.password = ''
-    
-    if(!request.status) return emit('notifyer', {title: 'Sucesso!', text: 'Cadastro realizado!', btnText: 'OK'})
+
+    if(request.status) return emit('notifyer', {title: 'Sucesso!', text: 'Cadastro realizado!', btnText: 'OK'})
 
     document.getElementById('modal-register-close').click()
 
