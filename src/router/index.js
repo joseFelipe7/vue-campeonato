@@ -4,6 +4,12 @@ import Test from '../Test.vue'
 import Championship from '../Championship.vue'
 import ChampionshipList from '../ChampionshipList.vue'
 
+function userLogged(){
+  let userLoggedToken =localStorage.getItem('authorization_token')
+  if(!userLoggedToken){
+    router.push('/')
+  }
+}
 const routes = [
   {
     //path: '/:id',
@@ -13,11 +19,13 @@ const routes = [
   },{
     path: '/campeonato',
     name: 'ChampionshipList',
-    component: ChampionshipList
+    component: ChampionshipList,
+    beforeEnter: [userLogged],
   },{
     path: '/campeonato/criar',
     name: 'Championship',
-    component: Championship
+    component: Championship,
+    beforeEnter: [userLogged],
   }
 ]
 const router = createRouter({
