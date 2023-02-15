@@ -10,7 +10,7 @@ async function requestApi(route, method = 'GET',token = false, body = false){
     if(body){
         config.body = JSON.stringify(body)
     }
-    const response = await fetch(`http://if-developers.com.br/api/${route}`,config)
+    const response = await fetch(`https://if-developers.com.br/api/${route}`,config)
     let result = await response.json()
 
     if(!response.ok){

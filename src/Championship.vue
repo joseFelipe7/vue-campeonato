@@ -17,6 +17,7 @@ let userLoggedName = ref(localStorage.getItem('userName'))
 let userLoggedToken = ref(localStorage.getItem('authorization_token'))
 let searchFriendInput = ref('')
 let friends = ref([])
+let hoverFriend = ref(false)
 let friendsInvite = ref([])
 let friendsIdInvite = ref([])
 let nameChampionship = ref('')
@@ -29,7 +30,7 @@ function notifyer(data){
 
 
 async function searchFriend(){
-    const response = await fetch(`http://if-developers.com.br/api/friend?filter[search]=${searchFriendInput.value}`,{
+    const response = await fetch(`https://if-developers.com.br/api/friend?filter[search]=${searchFriendInput.value}`,{
                                     method:'GET',
                                     headers: {
                                         'Content-Type': 'application/json',
@@ -66,13 +67,17 @@ function inviteForChampionship(idFriend, indexFriend){
     friendsIdInvite.value.push(friends.value[indexFriend].id_friend)
     
 }
+function removePlayerChapionship(indexFriend){
+    friendsInvite.value.splice(indexFriend, 1)
+    friendsIdInvite.value.splice(indexFriend, 1)
+}   
 async function createChampionship(){
   
     if(friendsInvite.value.length != totalPlayers.value){
         emit('toogle-notifyer', {title: 'Ops!', text: 'Número de players diferente do solicitado', btnText: 'OK'})
         return
     }
-    const response = await fetch('http://if-developers.com.br/api/championship/created',{
+    const response = await fetch('https://if-developers.com.br/api/championship/created',{
           method:'POST',
           headers: {
               'Content-Type': 'application/json',
@@ -101,20 +106,13 @@ async function createChampionship(){
 <template>
   <Header msg="Vite + Vue" :userName="userLoggedName" />
 
-  <div v-if="userLoggedName" style="background-image: url('/banner.png'); background-position: center; height: 400px;" >
+  <div style="background-image: url('/banner.png'); background-position: center; height: 400px;" >
     <div style="width: 100%; height: 100%; background: linear-gradient(360deg, #33115F 15.34%, rgba(0, 0, 0, 0.31) 76.73%); display: flex; align-items: center; justify-content: center;">
         <div style="text-align: center;">
             <p style="color:#FFF; font-weight: bold; font-size: 24px;">Crie e gerencie seus próprios campeonatos </p>
-            <button  data-bs-toggle="modal" data-bs-target="#cadastro-modal" class="btn-rounded btn-confirm" >CAMPEONATOS </button>
-        </div>
-    </div>
-  </div>
-
-  <div v-else style="background-image: url('/banner.png'); background-position: center; height: 400px;" >
-    <div style="width: 100%; height: 100%; background: linear-gradient(360deg, #33115F 15.34%, rgba(0, 0, 0, 0.31) 76.73%); display: flex; align-items: center; justify-content: center;">
-        <div style="text-align: center;">
-            <p style="color:#FFF; font-weight: bold; font-size: 24px;">Crie e gerencie seus próprios campeonatos </p>
-            <button  data-bs-toggle="modal" data-bs-target="#cadastro-modal" class="btn-rounded btn-confirm" >CADASTRE-SE </button>
+            <router-link to="/campeonato/criar">
+                <button  class="btn-rounded btn-confirm">NOVO</button>
+            </router-link>
         </div>
     </div>
   </div>
@@ -130,9 +128,6 @@ async function createChampionship(){
                     <div>
                         <span style="color:#FFF; font-weight: bold; font-size: 20px;">Eliminatorio</span>
                     </div>
-                    <div>
-                        <a @click="cheguei" style="background-color: #21A179 ;color:#FFF; text-align: center; border-radius: 25px; padding: 8px 25px; font-weight: bold; text-decoration: none;">+ criar</a>
-                    </div>
                 </div>
           </div>
           <div class="my-3" style="background: #1A0831; padding: 10px; border-radius: 8px; min-height: 200px;">
@@ -140,9 +135,9 @@ async function createChampionship(){
                 <p style="color:#FFF; text-align: center; font-weight: 600; margin: 0;">Jogadores adicionados</p>
             </div>
             <div style="background: #1A0831; border-radius: 8px; padding: 10px;">
-                <div class="my-3" style="display: flex; justify-content: space-between; border-bottom: 1px solid #FE3EE0; padding: 8px 0px" v-for="(item) in friendsInvite" :key="item.id">
+                <div class="my-3" style="display: flex; justify-content: space-between; border-bottom: 1px solid #FE3EE0; padding: 8px 0px" v-for="(item,index) in friendsInvite" :key="item.id">
                     <span style="color:#FFF">{{item.name}}</span>
-                    <button style="background: #FE3EE0; color: #FFF; border-radius: 10px; padding: 2px 20px; font-weight: 600;">Convidado</button>
+                    <button class="btn-friend btn-pink" @mouseover="hoverFriend = item.id_friend " @mouseleave="hoverFriend = false" @click="removePlayerChapionship(index)"> {{hoverFriend==item.id_friend?'Remover':'Convidado'}}</button>
                 </div>
             </div>      
           </div>
@@ -163,14 +158,15 @@ async function createChampionship(){
                 <div class="mb-3">
                     <div style="display: flex; justify-content: space-between;">
                         <label for="" class="label-input">Quantidade de participantes</label>
-                        <div style="color: #FFF; background: #247BA0; border-radius: 6px; font-weight: 600; display: flex;">
-                            <div style="cursor: pointer; padding: 0px 8px;" @click="decreasePlayers">
+                        
+                        <div class="containter-number-player" style="">
+                            <div class="number-select"  @click="decreasePlayers">
                                 <span> - </span>
                             </div>
                             <div style="padding: 0px 8px;">
                                 <span> {{totalPlayers}} </span>
                             </div>
-                            <div style="cursor: pointer; padding: 0px 8px;" @click="increasePlayers">
+                            <div class="number-select" @click="increasePlayers">
                                 <span> + </span>
                             </div>
                         </div>
@@ -183,12 +179,11 @@ async function createChampionship(){
                 
                     <div class="my-3" style="display: flex; justify-content: space-between; border-bottom: 1px solid #FE3EE0; padding: 5px 0px" v-for="(item, index) in friends" :key="item.id">
                         <span style="color:#FFF">{{item.name}}</span>
-                        <button style="background: #21A179; color: #FFF; border-radius: 10px; padding: 2px 20px; font-weight: 600;" @click="inviteForChampionship(item.id, index)" v-if="!friendsIdInvite.includes(item.id_friend)"> Convidar </button>
-                        <button style="background: #989898; color: #FFF; border-radius: 10px; padding: 2px 20px; font-weight: 600;"  v-else> Convidado </button>
+                        <button class="btn-friend btn-confirm" @click="inviteForChampionship(item.id, index)" v-if="!friendsIdInvite.includes(item.id_friend)"> Convidar </button>
+                        <button class="btn-friend btn-disable" v-else>Convidado</button>
                     </div>
                 <div class="mb-3 text-center">
                     <button  class="btn-confirm-modal" @click="createChampionship" >Criar campeonato</button>
-                    <button type="button" class="btn btn-secondary" id="modal-register-close" style="display: none;" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -203,5 +198,43 @@ async function createChampionship(){
 </template>
 
 <style scoped>
+.containter-number-player{
+    color: #FFF; 
+    background: #247BA0;
+    border-radius: 6px;
+    font-weight: 600;
+    display: flex;
+}
+.containter-number-player .number-select{
+    transition: 0.2s;
+    cursor: pointer; 
+    padding: 0px 8px;
+    border-radius: 6px;
 
+}
+.containter-number-player .number-select:hover{
+    background: #21A179;
+}
+.btn-friend{
+    color: #FFF; 
+    border-radius: 10px;
+    padding: 2px 20px; 
+    font-weight: 600;
+    transition: 0.3s;
+}
+.btn-friend.btn-confirm{
+    background: #21A179; 
+}
+.btn-friend.btn-confirm:hover{
+    background: #247BA0;
+}
+.btn-pink{
+    background: #FE3EE0;
+}
+.btn-friend.btn-pink:hover{
+    background: #989898;
+}
+.btn-friend.btn-disable{
+    background: #989898; 
+}
 </style>

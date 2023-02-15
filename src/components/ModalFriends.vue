@@ -25,7 +25,7 @@ onMounted(async ()=>{
 
     sendInvites.value = request.result.data.players
     //recived
-    const responseRecived = await fetch(`http://if-developers.com.br/api/friend/pending?filter[search]=${searchReceived.value}`,{
+    const responseRecived = await fetch(`https://if-developers.com.br/api/friend/pending?filter[search]=${searchReceived.value}`,{
                                 method:'GET',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -57,7 +57,7 @@ function selectTabSearch(){
     document.getElementById('btn-search-friend').classList.add('active-tab')
 }
 async function searchSendInput(){
-    const response = await fetch(`http://if-developers.com.br/api/player?filter[search]=${searchSend.value}`,{
+    const response = await fetch(`https://if-developers.com.br/api/player?filter[search]=${searchSend.value}`,{
                                 method:'GET',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -76,7 +76,7 @@ async function searchSendInput(){
 }
 
 async function searchReceivedInput(){
-    const response = await fetch(`http://if-developers.com.br/api/friend/pending?filter[search]=${searchReceived.value}`,{
+    const response = await fetch(`https://if-developers.com.br/api/friend/pending?filter[search]=${searchReceived.value}`,{
                                 method:'GET',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -94,7 +94,7 @@ async function searchReceivedInput(){
 
 }
 async function acceptFriend(idFriend, indexFriend){
-    const response = await fetch(`http://if-developers.com.br/api/friend/${idFriend}`,{
+    const response = await fetch(`https://if-developers.com.br/api/friend/${idFriend}`,{
                                 method:'PUT',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -112,7 +112,7 @@ async function acceptFriend(idFriend, indexFriend){
 
 async function sendRequestFriend(idPlayer, indexPlayer){
     
-    const response = await fetch(`http://if-developers.com.br/api/friend`,{
+    const response = await fetch(`https://if-developers.com.br/api/friend`,{
                                 method:'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -135,7 +135,7 @@ async function sendRequestFriend(idPlayer, indexPlayer){
 async function submit () {
     console.log('oi')
     
-    const response = await fetch('http://if-developers.com.br/api/auth/login',{
+    const response = await fetch('https://if-developers.com.br/api/auth/login',{
                                 method:'POST',
                                 headers: {
                                     'Content-Type': 'application/json'

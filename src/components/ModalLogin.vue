@@ -59,7 +59,7 @@ async function submit () {
             </div>
             <div class="modal-footer mb-3 p-0" style="border: none; justify-content: center;">
                 <div>
-                    <small style="color: #FFF;">Ainda não tem cadastro?<a style="text-decoration: none;color: #FE3EE0; cursor: pointer;" data-bs-target="#cadastro-modal" data-bs-toggle="modal" data-bs-dismiss="modal">Acesse</a></small>
+                    <small style="color: #FFF;">Ainda não tem cadastro?<a style="text-decoration: none;color: #FE3EE0; cursor: pointer;" data-bs-target="#cadastro-modal" data-bs-toggle="modal" data-bs-dismiss="modal">Cadastre-se</a></small>
                 </div>
             </div>
         </div>

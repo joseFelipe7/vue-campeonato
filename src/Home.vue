@@ -33,7 +33,7 @@ function login(){
         <div style="text-align: center;">
             <p style="color:#FFF; font-weight: bold; font-size: 24px;">Crie e gerencie seus próprios campeonatos </p>
             <router-link to="/campeonato">
-              <button  data-bs-toggle="modal" class="btn-rounded btn-confirm" data-bs-target="#cadastro-modal" >CAMPEONATOS </button>
+              <button  class="btn-rounded btn-confirm" >CAMPEONATOS </button>
             </router-link>
         </div>
     </div>

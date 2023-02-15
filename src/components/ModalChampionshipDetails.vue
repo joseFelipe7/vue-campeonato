@@ -15,7 +15,7 @@ const props = defineProps({
 })
 
 async function searchSendInput(){
-    const response = await fetch(`http://if-developers.com.br/api/player?filter[search]=${searchSend.value}`,{
+    const response = await fetch(`https://if-developers.com.br/api/player?filter[search]=${searchSend.value}`,{
                                 method:'GET',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ async function searchSendInput(){
 }
 
 async function startMatch(){
-    const response = await fetch(`http://if-developers.com.br/api/championship/${props.championship.championship.id}/match`,{
+    const response = await fetch(`https://if-developers.com.br/api/championship/${props.championship.championship.id}/match`,{
                                 method:'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ async function startMatch(){
         return
     }
 
-    const responseMatch = await fetch(`http://if-developers.com.br/api/championship/${props.championship.championship.id}/match/current`,{
+    const responseMatch = await fetch(`https://if-developers.com.br/api/championship/${props.championship.championship.id}/match/current`,{
                                     method:'GET',
                                     headers: {
                                         'Content-Type': 'application/json',
@@ -68,7 +68,7 @@ async function startMatch(){
     console.log('start')
 }
 async function endChampionship(){
-    const response = await fetch(`http://if-developers.com.br/api/championship/${props.championship.championship.id}/match`,{
+    const response = await fetch(`https://if-developers.com.br/api/championship/${props.championship.championship.id}/match`,{
                                 method:'POST',  
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -88,7 +88,7 @@ async function endChampionship(){
 async function playerWin(idMatch, idPlayer, indexMatch){
     console.log(idPlayer)
     console.log(``)
-    const response = await fetch(`http://if-developers.com.br/api/championship/${props.championship.championship.id}/match/${idMatch}/finished`,{
+    const response = await fetch(`https://if-developers.com.br/api/championship/${props.championship.championship.id}/match/${idMatch}/finished`,{
                                 method:'POST',
                                 headers: {
                                     'Content-Type': 'application/json',

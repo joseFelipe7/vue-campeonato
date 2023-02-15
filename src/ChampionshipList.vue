@@ -28,7 +28,7 @@ onMounted(async ()=>{
     console.log(userLoggedToken.value)
     console.log('carregando')
 
-    const response = await fetch(`http://if-developers.com.br/api/championship?per_page=10&sort=-created_at`,{
+    const response = await fetch(`https://if-developers.com.br/api/championship?per_page=10&sort=-created_at`,{
                                     method:'GET',
                                     headers: {
                                         'Content-Type': 'application/json',
@@ -48,7 +48,8 @@ onMounted(async ()=>{
 })
 async function changeDatailChampionship(idChampionship, indexChampionship){
     console.log('id Champion', idChampionship)
-    const response = await fetch(`http://if-developers.com.br/api/championship/${idChampionship}/match/current`,{
+    
+    const response = await fetch(`https://if-developers.com.br/api/championship/${idChampionship}/match/current`,{
                                     method:'GET',
                                     headers: {
                                         'Content-Type': 'application/json',
@@ -74,20 +75,13 @@ async function changeDatailChampionship(idChampionship, indexChampionship){
 <template>
   <Header msg="Vite + Vue" :userName="userLoggedName" />
 
-  <div v-if="userLoggedName" style="background-image: url('/banner.png'); background-position: center; height: 400px;" >
+  <div style="background-image: url('/banner.png'); background-position: center; height: 400px;" >
     <div style="width: 100%; height: 100%; background: linear-gradient(360deg, #33115F 15.34%, rgba(0, 0, 0, 0.31) 76.73%); display: flex; align-items: center; justify-content: center;">
         <div style="text-align: center;">
             <p style="color:#FFF; font-weight: bold; font-size: 24px;">Crie e gerencie seus próprios campeonatos </p>
-            <button  data-bs-toggle="modal" data-bs-target="#cadastro-modal" style=" background-color: #21A179 ;color:#FFF; border: none; text-align: center; border-radius: 25px; padding: 5px 25px; font-weight: bold;" >CAMPEONATOS </button>
-        </div>
-    </div>
-  </div>
-
-  <div v-else style="background-image: url('/banner.png'); background-position: center; height: 400px;" >
-    <div style="width: 100%; height: 100%; background: linear-gradient(360deg, #33115F 15.34%, rgba(0, 0, 0, 0.31) 76.73%); display: flex; align-items: center; justify-content: center;">
-        <div style="text-align: center;">
-            <p style="color:#FFF; font-weight: bold; font-size: 24px;">Crie e gerencie seus próprios campeonatos </p>
-            <button  data-bs-toggle="modal" data-bs-target="#cadastro-modal" style=" background-color: #21A179 ;color:#FFF; border: none; text-align: center; border-radius: 25px; padding: 5px 25px; font-weight: bold;" >CADASTRE-SE </button>
+            <router-link to="/campeonato/criar">
+                <button  class="btn-rounded btn-confirm">NOVO</button>
+            </router-link>
         </div>
     </div>
   </div>
