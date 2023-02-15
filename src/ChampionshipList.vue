@@ -2,6 +2,7 @@
 import HelloWorld from './components/HelloWorld.vue'
 import Header from './components/Header.vue'
 import Footer from './components/Footer.vue'
+import ModalFriends from './components/ModalFriends.vue'
 import ModalLogin from './components/ModalLogin.vue'
 import ModalRegister from './components/ModalRegister.vue'
 import ModalChampionshipDetails from './components/ModalChampionshipDetails.vue'

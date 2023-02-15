@@ -7,7 +7,7 @@ import ChampionshipList from '../ChampionshipList.vue'
 function userLogged(){
   let userLoggedToken =localStorage.getItem('authorization_token')
   if(!userLoggedToken){
-    router.push('/')
+    alert('logue para acessar')
   }
 }
 const routes = [
