@@ -21,6 +21,7 @@ async function submit () {
   
     localStorage.setItem ('authorization_token', request.result.data.access_token)
     localStorage.setItem ('userName', request.result.data.user.name)
+    localStorage.setItem ('expires_in_token', Math.floor(Date.now() / 1000) + request.result.data.expires_in)
     localStorage.setItem ('userData', JSON.stringify({
                                                     id:request.result.data.user.id,
                                                     name:request.result.data.user.name,
@@ -31,6 +32,8 @@ async function submit () {
     form.value.email = ''
     form.value.password = ''
     
+    if(!request.status) return emit('notifyer', {title: 'Sucesso!', text: 'Cadastro realizado!', btnText: 'OK'})
+
     document.getElementById('modal-register-close').click()
 
 };
