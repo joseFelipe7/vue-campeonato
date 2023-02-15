@@ -26,49 +26,17 @@ function notifyer(data){
 }
 
 onMounted(async ()=>{
-    console.log(userLoggedToken.value)
-    console.log('carregando')
+    let request = await requestApi(`championship?per_page=10&sort=-created_at`, 'GET', true)
+    if(!request.status) return emit('toogle-notifyer', {title: 'Falha!', text: request.error, btnText: 'OK'})
 
-    const response = await fetch(`https://if-developers.com.br/api/championship?per_page=10&sort=-created_at`,{
-                                    method:'GET',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'Authorization': 'Bearer '+userLoggedToken.value
-                                    },
-                               
-                            })
-
-    const responseJson = await response.json();
-    if(!response.ok){
-        alert(responseJson.message)
-    }
-
-    championships.value = responseJson.data.championships
-    console.log('carregou')
-    console.log(responseJson.data)
+    championships.value = request.result.data.championships
 })
 async function changeDatailChampionship(idChampionship, indexChampionship){
-    console.log('id Champion', idChampionship)
-    
-    const response = await fetch(`https://if-developers.com.br/api/championship/${idChampionship}/match/current`,{
-                                    method:'GET',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'Authorization': 'Bearer '+userLoggedToken.value
-                                    },
-                               
-                            })
+    let request = await requestApi(`championship/${idChampionship}/match/current`, 'GET', true)
+    if(!request.status) return emit('toogle-notifyer', {title: 'Falha!', text: request.error, btnText: 'OK'})
 
-    const responseJson = await response.json();
-    if(!response.ok){
-        alert(responseJson.message)
-        return
-    }
-    console.log(responseJson.data.matchs)
-    championshipsDatails.value.matchs = responseJson.data.matchs
+    championshipsDatails.value.matchs = request.result.data.matchs
     championshipsDatails.value.championship = championships.value[indexChampionship] 
-    console.log(championshipsDatails.value)
-    console.log('oi')
 }
 
 </script>

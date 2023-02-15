@@ -57,116 +57,35 @@ function selectTabSearch(){
     document.getElementById('btn-search-friend').classList.add('active-tab')
 }
 async function searchSendInput(){
-    const response = await fetch(`https://if-developers.com.br/api/player?filter[search]=${searchSend.value}`,{
-                                method:'GET',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': 'Bearer '+props.userLoggedToken
-                                },
-                               
-                            })
+    let request = await requestApi(`player?filter[search]=${searchSend.value}`, 'GET', true)
+    if(!request.status) return emit('notifyer', {title: 'Falha!', text: request.error, btnText: 'OK'})
 
-    const responseJson = await response.json();
-    if(!response.ok){
-        alert(responseJson.message)
-    }
-    console.log(responseJson.data.players)
-    sendInvites.value = responseJson.data.players
+    sendInvites.value = request.result.data.players
 
 }
 
 async function searchReceivedInput(){
-    const response = await fetch(`https://if-developers.com.br/api/friend/pending?filter[search]=${searchReceived.value}`,{
-                                method:'GET',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': 'Bearer '+props.userLoggedToken
-                                },
-                               
-                            })
-
-    const responseJson = await response.json();
-    if(!response.ok){
-        alert(responseJson.message)
-    }
-
-    recivedInvites.value = responseJson.data.friends
+    let request = await requestApi(`pending?filter[search]=${searchReceived.value}`, 'GET', true)
+    if(!request.status) return emit('notifyer', {title: 'Falha!', text: request.error, btnText: 'OK'})
+    
+    recivedInvites.value = request.result.data.friends
 
 }
 async function acceptFriend(idFriend, indexFriend){
-    const response = await fetch(`https://if-developers.com.br/api/friend/${idFriend}`,{
-                                method:'PUT',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': 'Bearer '+props.userLoggedToken
-                                },
-                               
-                            })
+    let request = await requestApi(`friend/${idFriend}`, 'PUT', true, { })
+    if(!request.status) return emit('notifyer', {title: 'Falha!', text: request.error, btnText: 'OK'})
 
-    const responseJson = await response.json();
-    if(!response.ok){
-        alert(responseJson.message)
-    }
     recivedInvites.value[indexFriend].accept = 1
 }
 
 async function sendRequestFriend(idPlayer, indexPlayer){
     
-    const response = await fetch(`https://if-developers.com.br/api/friend`,{
-                                method:'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': 'Bearer '+props.userLoggedToken
-                                },
-                                body:JSON.stringify({
-                                    id_player:idPlayer
-                                })
-                               
-                            })
+    let request = await requestApi('friend', 'POST', true, { id_player:idPlayer })
+    if(!request.status) return emit('notifyer', {title: 'Falha!', text: request.error, btnText: 'OK'})
 
-    const responseJson = await response.json();
-    if(!response.ok){
-        alert(responseJson.message)
-    }
     sendInvites.value[indexPlayer].accept = 0
 }
 
-
-async function submit () {
-    console.log('oi')
-    
-    const response = await fetch('https://if-developers.com.br/api/auth/login',{
-                                method:'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body:JSON.stringify({
-                                    email:form.value.email,
-                                    password:form.value.password
-                                })
-                            })
-                            
-    const responseJson = await response.json();
-    if(!response.ok){
-        alert(responseJson.message)
-        return
-    }
-
-    localStorage.setItem ('authorization_token', responseJson.data.access_token)
-    localStorage.setItem ('userName', responseJson.data.user.name)
-    localStorage.setItem ('userData', JSON.stringify({
-                                                    id:responseJson.data.user.id,
-                                                    name:responseJson.data.user.name,
-                                                    emai:responseJson.data.user.email
-                                                }))
-    emit('logged', 11111)
-    form.value.email = ''
-    form.value.password = ''
-    alert('Bem vindo '+localStorage.getItem('userName'))
-    document.getElementById('modal-login-close').click()
-
-    
-};
 </script>
 <template>
     <div class="modal fade" id="friend-modal" tabindex="-1" aria-labelledby="friendModal" aria-hidden="true">

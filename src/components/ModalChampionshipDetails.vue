@@ -119,8 +119,8 @@ async function playerWin(idMatch, idPlayer, indexMatch){
                     </div>
                 </div>
                 <div style="display: flex; align-items: center; justify-content: space-between; margin: 0px 15px;">
-                  <button v-if="championship.championship.round_total==championship.championship.round_current"  style="background: #FE3EE0; color: #FFF; border-radius: 10px; padding: 2px 20px; font-weight: 600;" @click="endChampionship"><span >Finalizar campeonato</span></button>
-                  <button v-else style="background: #21A179; color: #FFF; border-radius: 10px; padding: 2px 20px; font-weight: 600;" @click="startMatch"><span>Iniciar Proxima Rodada</span></button>
+                  <button v-if="championship.championship.round_total==championship.championship.round_current"  class="btn-rounded btn-finished" @click="endChampionship"><span >Finalizar campeonato</span></button>
+                  <button v-else class="btn-rounded btn-confirm" @click="startMatch"><span>Iniciar Proxima Rodada</span></button>
                     <span style="color: #FFF;">Rodada Atual: {{championship.championship.round_current}}</span>
                 </div>
                         
@@ -205,5 +205,11 @@ async function playerWin(idMatch, idPlayer, indexMatch){
         color: #FFF;
         text-decoration: underline #21A179; 
         text-underline-offset: 4px;  
+    }
+    .btn-finished{
+      background-color: #FE3EE0 ;
+    }
+    .btn-rounded.btn-finished:hover{
+      background-color: #fe3e5e ;
     }
 </style>
