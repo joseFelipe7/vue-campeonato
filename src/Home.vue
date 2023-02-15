@@ -57,7 +57,7 @@ function login(){
             <div class="card"  style="width: 18rem;; background-image:url('/trofeu-card.jpg'); background-position: center top; background-size: 100% auto; height: 350px; border: none;">
                 <div class="card-body" style="background: linear-gradient(179.61deg, #247BA0 6.33%, rgba(36, 123, 160, 0.67) 30.42%, rgba(36, 123, 160, 0) 60.59%); border-radius: 5px 5px 0px 0px; display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
                     <div>
-                        <span style="color:#FFF; font-weight: bold; font-size: 20px;">Eliminatorio</span>
+                        <span style="color:#FFF; font-weight: bold; font-size: 20px;">Eliminatório</span>
                     </div>
                       <div>
                           <router-link to="/campeonato/criar" style="background-color: #21A179 ;color:#FFF; text-align: center; border-radius: 25px; padding: 8px 25px; font-weight: bold; text-decoration: none;">+ criar</router-link>
@@ -69,7 +69,7 @@ function login(){
             <div class="card"  style="width: 18rem;; background-image:url('/trofeu-card.jpg'); background-position: center top; background-size: 100% auto; height: 350px; border: none;">
                 <div class="card-body" style="background: linear-gradient(179.61deg, #247BA0 6.33%, rgba(36, 123, 160, 0.67) 30.42%, rgba(36, 123, 160, 0) 60.59%); border-radius: 5px 5px 0px 0px; display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
                     <div>
-                        <span style="color:#FFF; font-weight: bold; font-size: 20px;">Eliminatorio</span>
+                        <span style="color:#FFF; font-weight: bold; font-size: 20px;">Eliminatório</span>
                     </div>
                     <div>
                       <router-link to="/campeonato/criar" style="background-color: #21A179 ;color:#FFF; text-align: center; border-radius: 25px; padding: 8px 25px; font-weight: bold; text-decoration: none;">+ criar</router-link>
@@ -81,7 +81,7 @@ function login(){
             <div class="card"  style="width: 18rem;; background-image:url('/trofeu-card.jpg'); background-position: center top; background-size: 100% auto; height: 350px; border: none;">
                 <div class="card-body" style="background: linear-gradient(179.61deg, #247BA0 6.33%, rgba(36, 123, 160, 0.67) 30.42%, rgba(36, 123, 160, 0) 60.59%); border-radius: 5px 5px 0px 0px; display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
                     <div>
-                        <span style="color:#FFF; font-weight: bold; font-size: 20px;">Eliminatorio</span>
+                        <span style="color:#FFF; font-weight: bold; font-size: 20px;">Eliminatório</span>
                     </div>
                     <div>
                       <router-link to="/campeonato/criar" style="background-color: #21A179 ;color:#FFF; text-align: center; border-radius: 25px; padding: 8px 25px; font-weight: bold; text-decoration: none;">+ criar</router-link>
