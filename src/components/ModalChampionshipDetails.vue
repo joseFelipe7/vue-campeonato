@@ -48,7 +48,7 @@ async function playerWin(idMatch, idPlayer, indexMatch){
 }
 </script>
 <template>
-    <div class="modal modal-lg fade" id="championship-modal" tabindex="-1" aria-labelledby="friendModal" aria-hidden="true">
+    <div class="modal modal-xl fade" id="championship-modal" tabindex="-1" aria-labelledby="friendModal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content modal-content-custom">
                 <div class="modal-header modal-header-custom">
@@ -85,8 +85,8 @@ async function playerWin(idMatch, idPlayer, indexMatch){
                                     <td>{{item.player_b}}</td>
                                     <td class="text-center" v-if="item.id_player_win">{{item.id_player_win==item.id_player_a?item.player_a:item.player_b}}</td>
                                     <td style="text-align: center; display: flex; font-size: 14px;" v-else>
-                                        <button style="background: #247BA0; color: #FFF; border-radius: 6px; padding: 2px 20px; font-weight: 600;" @click="playerWin(item.id, item.id_player_a, index)">{{item.player_a}}</button>
-                                        <button style="background: #247BA0; color: #FFF; border-radius: 6px; padding: 2px 20px; font-weight: 600;" @click="playerWin(item.id, item.id_player_b, index)">{{item.player_b}}</button> 
+                                        <button style="background: #247BA0; color: #FFF; border-radius: 6px; padding: 2px 20px; font-weight: 600; flex: 1;" @click="playerWin(item.id, item.id_player_a, index)">{{item.player_a}}</button>
+                                        <button style="background: #247BA0; color: #FFF; border-radius: 6px; padding: 2px 20px; font-weight: 600; flex: 1;" @click="playerWin(item.id, item.id_player_b, index)">{{item.player_b}}</button> 
                                     </td>
                                     <td  class="text-center"><span v-if="item.id_player_win">Finalizada</span> <span v-else>Aguardando vencedor</span></td>
                                 </tr>
