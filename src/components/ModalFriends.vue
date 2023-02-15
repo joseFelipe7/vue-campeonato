@@ -19,27 +19,8 @@ let sendInvites    = ref([])
 let searchSend = ref('')
 let searchReceived = ref('')
 onMounted(async ()=>{
-    let request = await requestApi(`player?filter[search]=${searchSend.value}`, 'GET', true)
-    
-    if(!request.status) return emit('notifyer', {title: 'Falha!', text: request.error, btnText: 'OK'})
-
-    sendInvites.value = request.result.data.players
-    //recived
-    const responseRecived = await fetch(`https://if-developers.com.br/api/friend/pending?filter[search]=${searchReceived.value}`,{
-                                method:'GET',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': 'Bearer '+props.userLoggedToken
-                                },
-                               
-                            })
-
-    const responseRecivedJson = await responseRecived.json();
-    if(!responseRecived.ok){
-        alert(responseRecivedJson.message)
-    }
-
-    recivedInvites.value = responseRecivedJson.data.friends
+    await searchSendInput()
+    await searchReceivedInput()
     
 })
 
@@ -65,7 +46,7 @@ async function searchSendInput(){
 }
 
 async function searchReceivedInput(){
-    let request = await requestApi(`pending?filter[search]=${searchReceived.value}`, 'GET', true)
+    let request = await requestApi(`friend/pending?filter[search]=${searchReceived.value}`, 'GET', true)
     if(!request.status) return emit('notifyer', {title: 'Falha!', text: request.error, btnText: 'OK'})
     
     recivedInvites.value = request.result.data.friends

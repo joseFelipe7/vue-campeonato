@@ -93,7 +93,7 @@ async function createChampionship(){
     <div class="row">
         <div class="col-lg-1"></div>
         <div class="col-lg-3 my-2" style="display: flex; justify-content: flex-start; flex-direction: column">
-            <div class="card"  style="width: 18rem;; background-image:url('/trofeu-card.jpg'); background-position: center top; background-size: 100% auto; height: 350px; border: none;">
+            <div class="card"  style="background-image:url('/trofeu-card.jpg'); background-position: center top; background-size: 100% auto; height: 350px; border: none;">
                 <div class="card-body" style="background: linear-gradient(179.61deg, #247BA0 6.33%, rgba(36, 123, 160, 0.67) 30.42%, rgba(36, 123, 160, 0) 60.59%); border-radius: 5px 5px 0px 0px; display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
                     <div>
                         <span style="color:#FFF; font-weight: bold; font-size: 20px;">Eliminatório</span>
