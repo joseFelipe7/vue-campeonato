@@ -1,7 +1,23 @@
-# Vue 3 + Vite
+# Vue 3 + Vite | Bootstrap
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Projeto Front-end desenvolvido em Vue 3 - composition api | Vite | Bootstrap.
 
-## Recommended IDE Setup
+Este projeto se trata de uma interface que criei para complementar um [projeto Back-end](https://github.com/joseFelipe7/campeonato) que desenvolvi. 
+Ambos, formam uma plataforma de Partidas/Campeonatos onde as pessoas podem criar seu cadastro, convidar amigos cadastrados e criar partidas. 
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+Por enquanto, o sistema trabalha apenas com Competições do Tipo Eliminatórias.
+Onde: dada uma partida criada com um certo número de jogadores (amigos do host), os mesmos participariam de rodadas de algum jogo que queiram (genéricamente, como LOL), tendo o host do campeonato o dever de indicar os vencedores de cada rodada, e, somente após os vencedores terem sido indicados, ele poderá iniciar nova partida ou consultar os resultados das rodadas.
+
+## Build
+Este app está online e disponível para testes já integrado a api mencionada.
+[Verifique aqui:](https://vue-campeonato.vercel.app/#/) https://vue-campeonato.vercel.app/#/
+
+## Start
+Caso queria rodar o projeto, execute:
+```
+npm install
+```
+
+```
+npm run dev
+```
