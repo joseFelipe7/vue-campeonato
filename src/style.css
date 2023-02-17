@@ -39,6 +39,10 @@
 .moodal-body-container{
   border-bottom:#FE3EE0 1px solid
 }
+.modal-footer-custom{
+  border: none; 
+  justify-content: center;
+}
 .label-input{
   color:#FFF
 }

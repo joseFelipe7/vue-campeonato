@@ -1,44 +1,44 @@
 <script setup>
-  import { ref } from 'vue';
-  import requestApi from '../helpers/requestHelper';
+import { ref } from 'vue'
+import requestApi from '../helpers/requestHelper'
 
-  const emit = defineEmits(['logged', 'notifyer'])
+const emit = defineEmits(['logged', 'notifyer'])
 
-  let form = ref({
-    email: '',
-    password: ''
+let form = ref({
+  email: '',
+  password: ''
+})
+
+
+async function submit() {
+  const request = await requestApi('auth/login', 'POST', true, {
+    email: form.value.email,
+    password: form.value.password
   })
 
+  if (!request.status) return emit('notifyer', {
+    title: 'Falha!',
+    text: request.error,
+    btnText: 'OK'
+  })
 
-  async function submit() {
-    const request = await requestApi('auth/login', 'POST', true, {
-      email: form.value.email,
-      password: form.value.password
-    })
+  localStorage.setItem('authorization_token', request.result.data.access_token)
+  localStorage.setItem('userName', request.result.data.user.name)
+  localStorage.setItem('expires_in_token', Math.floor(Date.now() / 1000) + request.result.data.expires_in)
+  localStorage.setItem('userData', JSON.stringify({
+    id: request.result.data.user.id,
+    name: request.result.data.user.name,
+    emai: request.result.data.user.email
+  }))
 
-    if (!request.status) return emit('notifyer', {
-      title: 'Falha!',
-      text: request.error,
-      btnText: 'OK'
-    })
+  emit('logged')
 
-    localStorage.setItem('authorization_token', request.result.data.access_token)
-    localStorage.setItem('userName', request.result.data.user.name)
-    localStorage.setItem('expires_in_token', Math.floor(Date.now() / 1000) + request.result.data.expires_in)
-    localStorage.setItem('userData', JSON.stringify({
-      id: request.result.data.user.id,
-      name: request.result.data.user.name,
-      emai: request.result.data.user.email
-    }))
+  form.value.email = ''
+  form.value.password = ''
 
-    emit('logged')
+  document.getElementById('modal-login-close').click()
 
-    form.value.email = ''
-    form.value.password = ''
-
-    document.getElementById('modal-login-close').click()
-
-  }
+}
 </script>
 <template>
   <div class="modal fade" id="login-modal" tabindex="-1" aria-labelledby="loginModal" aria-hidden="true">
@@ -68,7 +68,7 @@
             </div>
           </div>
         </div>
-        <div class="modal-footer mb-3 p-0" style="border: none; justify-content: center;">
+        <div class="modal-footer modal-footer-custom mb-3 p-0">
           <div>
             <small style="color: #FFF;">Ainda não tem cadastro?<a
                 style="text-decoration: none;color: #FE3EE0; cursor: pointer;" data-bs-target="#cadastro-modal"

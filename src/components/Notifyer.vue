@@ -1,15 +1,3 @@
-<template>
-    <div id="alert-notifyer" class="notifyer">
-      <div class="notifyer-colors">
-        <div class="notifyer-content">
-          <h2 class="notifyer-title">{{title}} </h2>
-          <div id="notifyer-text" >{{text}}</div>
-        </div>
-        <a href="#" class="notifyer-action">{{btnText}}</a>
-      </div>
-    </div>
-</template>
-
 <script setup>
 import { ref } from 'vue'
 
@@ -20,13 +8,24 @@ defineProps({
 })
 </script>
 
+<template>
+  <div id="alert-notifyer" class="notifyer">
+    <div class="notifyer-colors">
+      <div class="notifyer-content">
+        <h2 class="notifyer-title">{{title}} </h2>
+        <div id="notifyer-text" >{{text}}</div>
+      </div>
+      <a href="#" class="notifyer-action">{{btnText}}</a>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .notifyer {
 	position: absolute;
 	top: 60px;
 	left: 20px;
-  	z-index: 2000;
+  z-index: 2000;
 	background-position: center;
 	background-size: cover;
 	display: flex;
